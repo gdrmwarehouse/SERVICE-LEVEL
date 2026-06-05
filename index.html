@@ -1003,13 +1003,38 @@ function apiJsonp(params){
 const tanggalInput =
   document.getElementById(
     "tanggal"
-  );  
+  );
 
-const today = new Date();
+function getTodayLocalDate(){
+
+  const now =
+    new Date();
+
+  const year =
+    now.getFullYear();
+
+  const month =
+    String(
+      now.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const day =
+    String(
+      now.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return `${year}-${month}-${day}`;
+
+}
 
 tanggalInput.value =
-  today.toISOString()
-  .split('T')[0];
+  getTodayLocalDate();
 
 loadData();
 
@@ -1045,88 +1070,12 @@ tanggalInput.addEventListener(
   loadData
 );
 
-  function apiJsonp(params){
-
-  return new Promise((resolve, reject) => {
-
-    const callbackName =
-      'gdrmCallback_' +
-      Date.now() +
-      '_' +
-      Math.random()
-        .toString(36)
-        .slice(2);
-
-    params.callback =
-      callbackName;
-
-    const query =
-      new URLSearchParams(params)
-        .toString();
-
-    const script =
-      document.createElement('script');
-
-    const timer =
-      setTimeout(() => {
-
-        cleanup();
-
-        reject(
-          new Error(
-            'Request timeout ke Apps Script'
-          )
-        );
-
-      },30000);
-
-    function cleanup(){
-
-      clearTimeout(timer);
-
-      delete window[callbackName];
-
-      if(script.parentNode){
-
-        script.parentNode.removeChild(script);
-
-      }
-
-    }
-
-    window[callbackName] =
-      function(response){
-
-        cleanup();
-
-        resolve(response);
-
-      };
-
-    script.onerror =
-      function(){
-
-        cleanup();
-
-        reject(
-          new Error(
-            'Gagal ambil data dari Apps Script'
-          )
-        );
-
-      };
-
-    script.src =
-      APP_SCRIPT_API_URL +
-      '?' +
-      query;
-
-    document.body.appendChild(script);
-
-  });
-
-}
 function loadData(){
+
+  document.getElementById(
+    "runningText"
+  ).innerHTML =
+    "LOADING DATA...";
 
   apiJsonp({
     action:'getData',
@@ -1183,7 +1132,7 @@ function loadData(){
     document.getElementById(
       "runningText"
     ).innerHTML =
-      "❌ GAGAL AMBIL DATA. CEK CONSOLE / URL API.";
+      "❌ GAGAL AMBIL DATA. CEK URL API / DEPLOYMENT.";
 
   });
 
@@ -1208,63 +1157,63 @@ function renderTable(){
     .toLowerCase();
 
   let filtered =
-  allData.filter(d => {
+    allData.filter(d => {
 
-    const matchPlant =
-      plant == "ALL" ||
-      d.plant == plant;
+      const matchPlant =
+        plant == "ALL" ||
+        d.plant == plant;
 
-    const matchStatus =
-      status == "ALL" ||
-      d.status == status;
+      const matchStatus =
+        status == "ALL" ||
+        d.status == status;
 
-    const text =
-      JSON.stringify(d)
-      .toLowerCase();
+      const text =
+        JSON.stringify(d)
+        .toLowerCase();
 
-    const matchSearch =
-      text.includes(search);
+      const matchSearch =
+        text.includes(search);
 
-    return (
-      matchPlant &&
-      matchStatus &&
-      matchSearch
-    );
+      return (
+        matchPlant &&
+        matchStatus &&
+        matchSearch
+      );
+
+    });
+
+  filtered.sort((a,b) => {
+
+    const timeA =
+      a.masuk || "99:99";
+
+    const timeB =
+      b.masuk || "99:99";
+
+    return timeA.localeCompare(timeB);
 
   });
-
-filtered.sort((a,b)=>{
-
-  const timeA =
-    a.masuk || "99:99";
-
-  const timeB =
-    b.masuk || "99:99";
-
-  return timeA.localeCompare(timeB);
-
-});
 
   const tbody =
     document.getElementById(
       "tableBody"
     );
 
-  tbody.innerHTML = '';
+  let html = '';
 
   filtered.forEach(d => {
 
-    tbody.innerHTML += `
+    html += `
 
-    <tr class="row-${d.plant.replace('SL_','')}">
+    <tr class="row-${String(d.plant || '').replace('SL_','')}">
 
       <td>${d.no}</td>
 
-     <td class="plant-cell">
+      <td class="plant-cell">
 
-  ${d.plant.replace('SL_','')}
+        ${String(d.plant || '').replace('SL_','')}
 
-</td>
+      </td>
 
       <td>
 
@@ -1341,6 +1290,9 @@ filtered.sort((a,b)=>{
     `;
 
   });
+
+  tbody.innerHTML =
+    html;
 
 }
 
@@ -1605,7 +1557,7 @@ function speakSummary(){
   const text =
 
   `
-  Hallo TIm GDRM!, Kedatangan hari ini
+  Hallo Tim GDRM, Kedatangan hari ini
 
   Plant sebelas sebelas,
   ${total1111} ritase.
@@ -1616,7 +1568,7 @@ function speakSummary(){
   Plant sebelas tiga belas,
   ${total1113} ritase.
 
-  Tetap semangat, jangan lupa update, dan cek selalu semua penginputan
+  Tetap semangat, jangan lupa update, dan cek selalu semua penginputan.
   `;
 
   const speech =
@@ -1801,7 +1753,45 @@ function canSpeak(key, intervalMinutes){
 
 }
 
-function getMinuteDiff(timeMs){
+function hasTime(value){
+
+  return !!(
+    value &&
+    value !== '-'
+  );
+
+}
+
+function getActualTimeMs(d, fieldName){
+
+  const timeValue =
+    d[fieldName];
+
+  if(!hasTime(timeValue)) return null;
+
+  const dateValue =
+    d.tanggal ||
+    tanggalInput.value ||
+    getTodayLocalDate();
+
+  const parsed =
+    new Date(
+      `${dateValue}T${timeValue}:00`
+    ).getTime();
+
+  if(isNaN(parsed)) return null;
+
+  return parsed;
+
+}
+
+function getMinuteDiffFromData(d, fieldName){
+
+  const timeMs =
+    getActualTimeMs(
+      d,
+      fieldName
+    );
 
   if(!timeMs) return 0;
 
@@ -1870,30 +1860,29 @@ function checkOperationalAlarm(){
       getRmName(d);
 
     /*
- /*
-  1. DATA ADA TAPI IN KOSONG
-  BUNYI TERUS SETIAP 7 DETIK SAMPAI IN DIISI
-*/
-if(
-  !d.masukMs
-){
+      1. DATA ADA TAPI IN KOSONG
+      BUNYI SETIAP 10 MENIT SAMPAI IN DIISI
+    */
+    if(
+      !hasTime(d.masuk)
+    ){
 
-  speakAlarmLoop(
-    ` SAYANGKU !! Alarm. IN kosong. Admin ${plant}, nopol ${nopol}.`,
-    600000
-  );
+      speakAlarmLoop(
+        `Sayangku. Alarm. IN kosong. Admin ${plant}, nopol ${nopol}.`,
+        600000
+      );
 
-  return;
+      return;
 
-}
+    }
 
     /*
       2. IN SUDAH TERISI, QC MASIH KOSONG
       INGATKAN SETIAP 3 MENIT
     */
     if(
-      d.masukMs &&
-      !d.qcMs
+      hasTime(d.masuk) &&
+      !hasTime(d.qc)
     ){
 
       const key =
@@ -1907,7 +1896,7 @@ if(
       ){
 
         speakAlarm(
-          `SAYANGKU !! Admin ${plant}, nopol ${nopol}, R M ${rm}, segera lakukan pengecekan Q C.`
+          `Sayangku. Admin ${plant}, nopol ${nopol}, R M ${rm}, segera lakukan pengecekan Q C.`
         );
 
         return;
@@ -1921,12 +1910,12 @@ if(
       INGATKAN SETIAP 10 MENIT
     */
     if(
-      d.qcMs &&
-      !d.startMs
+      hasTime(d.qc) &&
+      !hasTime(d.start)
     ){
 
       const key =
-        `SAYANGKU !! ADMIN! START_KOSONG_${d.plant}_${d.no}_${d.nopol}`;
+        `START_KOSONG_${d.plant}_${d.no}_${d.nopol}`;
 
       if(
         canSpeak(
@@ -1936,7 +1925,7 @@ if(
       ){
 
         speakAlarm(
-          ` SAYANGKU !!Admin ${plant}, Q C nopol ${nopol} sudah selesai. Segera update start bongkar R M ${rm}.`
+          `Sayangku. Admin ${plant}, Q C nopol ${nopol} sudah selesai. Segera update start bongkar R M ${rm}.`
         );
 
         return;
@@ -1951,13 +1940,14 @@ if(
       LEBIH DARI 40 MENIT = BUNYI TERUS
     */
     if(
-      d.startMs &&
-      !d.finishMs
+      hasTime(d.start) &&
+      !hasTime(d.finish)
     ){
 
       const menit =
-        getMinuteDiff(
-          d.startMs
+        getMinuteDiffFromData(
+          d,
+          'start'
         );
 
       if(
@@ -1975,7 +1965,7 @@ if(
       ){
 
         const key =
-          ` FINISH_WARNING_${d.plant}_${d.no}_${d.nopol}`;
+          `FINISH_WARNING_${d.plant}_${d.no}_${d.nopol}`;
 
         if(
           canSpeak(
@@ -1985,7 +1975,7 @@ if(
         ){
 
           speakAlarm(
-            `bahayaaa !!! Perhatian admin ${plant}. Bongkar nopol ${nopol}, R M ${rm}, sudah ${menit} menit. Waktu hampir habis, segera update finish bongkar.`
+            `Bahaya. Perhatian admin ${plant}. Bongkar nopol ${nopol}, R M ${rm}, sudah ${menit} menit. Waktu hampir habis, segera update finish bongkar.`
           );
 
           return;
@@ -2009,28 +1999,22 @@ if(
       continuousItem.nopol ||
       "tanpa nopol";
 
-    const rm =
-      getRmName(
-        continuousItem
-      );
-
     const menit =
-      getMinuteDiff(
-        continuousItem.startMs
+      getMinuteDiffFromData(
+        continuousItem,
+        'start'
       );
 
     speakAlarmLoop(
-     speakAlarmLoop(
-  `Alarm kritikal. Bongkar lebih dari ${menit} menit. Admin ${plant}, nopol ${nopol}, segera isi finish.`,
-  15000
-);
+      `Alarm kritikal. Bongkar lebih dari ${menit} menit. Admin ${plant}, nopol ${nopol}, segera isi finish.`,
+      15000
+    );
 
   }else{
 
     stopContinuousAlarm();
 
   }
-  
 
 }
 
