@@ -1562,6 +1562,109 @@ let alarmHistory = {};
 
 let continuousAlarmTimer = null;
 
+let audioCtx = null;
+
+function initBeep(){
+
+  try{
+
+    if(!audioCtx){
+
+      audioCtx =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+    if(audioCtx.state === "suspended"){
+
+      audioCtx.resume();
+
+    }
+
+  }catch(err){
+
+    console.log(
+      "AudioContext gagal:",
+      err
+    );
+
+  }
+
+}
+
+function playBeep(count){
+
+  if(!alarmEnabled) return;
+
+  initBeep();
+
+  if(!audioCtx) return;
+
+  const total =
+    count || 3;
+
+  for(
+    let i = 0;
+    i < total;
+    i++
+  ){
+
+    const start =
+      audioCtx.currentTime +
+      (i * 0.35);
+
+    const oscillator =
+      audioCtx.createOscillator();
+
+    const gain =
+      audioCtx.createGain();
+
+    oscillator.type =
+      "square";
+
+    oscillator.frequency.setValueAtTime(
+      1200,
+      start
+    );
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      start
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.9,
+      start + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      start + 0.22
+    );
+
+    oscillator.connect(
+      gain
+    );
+
+    gain.connect(
+      audioCtx.destination
+    );
+
+    oscillator.start(
+      start
+    );
+
+    oscillator.stop(
+      start + 0.25
+    );
+
+  }
+
+}
+
 function toggleAlarm(){
 
   const btn =
@@ -1572,6 +1675,10 @@ function toggleAlarm(){
   if(!alarmEnabled){
 
     alarmEnabled = true;
+
+    initBeep();
+
+    playBeep(3);
 
     btn.innerHTML =
       "🔊 ALARM ON";
@@ -1634,24 +1741,38 @@ function speakAlarm(text){
 
   if(!alarmEnabled) return;
 
-  const speech =
-    new SpeechSynthesisUtterance(
-      text
+  // BEEP BACKUP UNTUK TV
+  playBeep(2);
+
+  try{
+
+    const speech =
+      new SpeechSynthesisUtterance(
+        text
+      );
+
+    speech.lang = "id-ID";
+
+    speech.rate = 1;
+
+    speech.pitch = 1.2;
+
+    speech.volume = 1;
+
+    window.speechSynthesis.cancel();
+
+    window.speechSynthesis.speak(
+      speech
     );
 
-  speech.lang = "id-ID";
+  }catch(err){
 
-  speech.rate = 1;
+    console.log(
+      "Speech gagal, beep tetap jalan:",
+      err
+    );
 
-  speech.pitch = 1.2;
-
-  speech.volume = 1;
-
-  window.speechSynthesis.cancel();
-
-  window.speechSynthesis.speak(
-    speech
-  );
+  }
 
 }
 
