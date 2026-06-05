@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -1003,38 +1004,13 @@ function apiJsonp(params){
 const tanggalInput =
   document.getElementById(
     "tanggal"
-  );
+  );  
 
-function getTodayLocalDate(){
-
-  const now =
-    new Date();
-
-  const year =
-    now.getFullYear();
-
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(
-      2,
-      '0'
-    );
-
-  const day =
-    String(
-      now.getDate()
-    ).padStart(
-      2,
-      '0'
-    );
-
-  return `${year}-${month}-${day}`;
-
-}
+const today = new Date();
 
 tanggalInput.value =
-  getTodayLocalDate();
+  today.toISOString()
+  .split('T')[0];
 
 loadData();
 
@@ -1070,12 +1046,7 @@ tanggalInput.addEventListener(
   loadData
 );
 
-function loadData(){
-
-  document.getElementById(
-    "runningText"
-  ).innerHTML =
-    "LOADING DATA...";
+  function loadData(){
 
   apiJsonp({
     action:'getData',
@@ -1132,7 +1103,7 @@ function loadData(){
     document.getElementById(
       "runningText"
     ).innerHTML =
-      "❌ GAGAL AMBIL DATA. CEK URL API / DEPLOYMENT.";
+      "❌ GAGAL AMBIL DATA. CEK CONSOLE / URL API.";
 
   });
 
@@ -1157,63 +1128,63 @@ function renderTable(){
     .toLowerCase();
 
   let filtered =
-    allData.filter(d => {
+  allData.filter(d => {
 
-      const matchPlant =
-        plant == "ALL" ||
-        d.plant == plant;
+    const matchPlant =
+      plant == "ALL" ||
+      d.plant == plant;
 
-      const matchStatus =
-        status == "ALL" ||
-        d.status == status;
+    const matchStatus =
+      status == "ALL" ||
+      d.status == status;
 
-      const text =
-        JSON.stringify(d)
-        .toLowerCase();
+    const text =
+      JSON.stringify(d)
+      .toLowerCase();
 
-      const matchSearch =
-        text.includes(search);
+    const matchSearch =
+      text.includes(search);
 
-      return (
-        matchPlant &&
-        matchStatus &&
-        matchSearch
-      );
-
-    });
-
-  filtered.sort((a,b) => {
-
-    const timeA =
-      a.masuk || "99:99";
-
-    const timeB =
-      b.masuk || "99:99";
-
-    return timeA.localeCompare(timeB);
+    return (
+      matchPlant &&
+      matchStatus &&
+      matchSearch
+    );
 
   });
+
+filtered.sort((a,b)=>{
+
+  const timeA =
+    a.masuk || "99:99";
+
+  const timeB =
+    b.masuk || "99:99";
+
+  return timeA.localeCompare(timeB);
+
+});
 
   const tbody =
     document.getElementById(
       "tableBody"
     );
 
-  let html = '';
+  tbody.innerHTML = '';
 
   filtered.forEach(d => {
 
-    html += `
+    tbody.innerHTML += `
 
-    <tr class="row-${String(d.plant || '').replace('SL_','')}">
+    <tr class="row-${d.plant.replace('SL_','')}">
 
       <td>${d.no}</td>
 
-      <td class="plant-cell">
+     <td class="plant-cell">
 
-        ${String(d.plant || '').replace('SL_','')}
+  ${d.plant.replace('SL_','')}
 
-      </td>
+</td>
 
       <td>
 
@@ -1290,9 +1261,6 @@ function renderTable(){
     `;
 
   });
-
-  tbody.innerHTML =
-    html;
 
 }
 
@@ -1557,7 +1525,7 @@ function speakSummary(){
   const text =
 
   `
-  Hallo Tim GDRM, Kedatangan hari ini
+  Hallo TIm GDRM!, Kedatangan hari ini
 
   Plant sebelas sebelas,
   ${total1111} ritase.
@@ -1568,7 +1536,7 @@ function speakSummary(){
   Plant sebelas tiga belas,
   ${total1113} ritase.
 
-  Tetap semangat, jangan lupa update, dan cek selalu semua penginputan.
+  Tetap semangat, jangan lupa update, dan cek selalu semua penginputan
   `;
 
   const speech =
@@ -1753,45 +1721,7 @@ function canSpeak(key, intervalMinutes){
 
 }
 
-function hasTime(value){
-
-  return !!(
-    value &&
-    value !== '-'
-  );
-
-}
-
-function getActualTimeMs(d, fieldName){
-
-  const timeValue =
-    d[fieldName];
-
-  if(!hasTime(timeValue)) return null;
-
-  const dateValue =
-    d.tanggal ||
-    tanggalInput.value ||
-    getTodayLocalDate();
-
-  const parsed =
-    new Date(
-      `${dateValue}T${timeValue}:00`
-    ).getTime();
-
-  if(isNaN(parsed)) return null;
-
-  return parsed;
-
-}
-
-function getMinuteDiffFromData(d, fieldName){
-
-  const timeMs =
-    getActualTimeMs(
-      d,
-      fieldName
-    );
+function getMinuteDiff(timeMs){
 
   if(!timeMs) return 0;
 
@@ -1820,6 +1750,56 @@ function getRmName(d){
     d.material ||
     d.sku ||
     "material"
+  );
+
+}
+
+function hasTime(value){
+
+  return !!(
+    value &&
+    value !== '-'
+  );
+
+}
+
+function getActualTimeMs(d, fieldName){
+
+  const timeValue =
+    d[fieldName];
+
+  if(!hasTime(timeValue)) return null;
+
+  const dateValue =
+    d.tanggal ||
+    tanggalInput.value ||
+    new Date().toISOString().split('T')[0];
+
+  const parsed =
+    new Date(
+      `${dateValue}T${timeValue}:00`
+    ).getTime();
+
+  if(isNaN(parsed)) return null;
+
+  return parsed;
+
+}
+
+function getMinuteDiffFromData(d, fieldName){
+
+  const timeMs =
+    getActualTimeMs(
+      d,
+      fieldName
+    );
+
+  if(!timeMs) return 0;
+
+  return Math.floor(
+    (
+      Date.now() - timeMs
+    ) / 60000
   );
 
 }
