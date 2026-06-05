@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<base target="_top">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+  #alarmBtn{
+
+  background:
+    linear-gradient(
+      135deg,
+      #dc2626,
+      #ef4444
+    );
+
+}
+
+#alarmBtn.alarm-on{
+
+  background:
+    linear-gradient(
+      135deg,
+      #16a34a,
+      #22c55e
+    );
+
+  animation:
+    alarmPulse 1.2s infinite;
+
+}
+
+@keyframes alarmPulse{
+
+  0%{
+    box-shadow:0 0 0 0 rgba(34,197,94,0.55);
+  }
+
+  70%{
+    box-shadow:0 0 0 12px rgba(34,197,94,0);
+  }
+
+  100%{
+    box-shadow:0 0 0 0 rgba(34,197,94,0);
+  }
+
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+
+  margin:0;
+
+  font-family:'Inter',sans-serif;
+
+  background:
+    linear-gradient(
+      135deg,
+      #dbeafe 0%,
+      #eff6ff 30%,
+      #f8fafc 60%,
+      #ede9fe 100%
+    );
+
+  background-attachment:fixed;
+
+  color:#111827;
+
+  transition:0.3s;
+
+}
+
+.header{
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #1e293b,
+      #334155
+    );
+
+  color:white;
+
+  padding:20px 24px;
+
+  position:sticky;
+
+  top:0;
+
+  z-index:999;
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.2);
+
+}
+
+.header-top{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  gap:20px;
+
+  flex-wrap:wrap;
+
+}
+
+.title{
+
+  font-size:32px;
+
+  font-weight:800;
+
+}
+
+.subtitle{
+
+  margin-top:6px;
+
+  color:#cbd5e1;
+
+}
+
+.right-tools{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:12px;
+
+  flex-wrap:wrap;
+
+}
+
+.filter-select,
+.search-box{
+
+  border:none;
+
+  border-radius:14px;
+
+  padding:12px 16px;
+
+  font-weight:700;
+
+  outline:none;
+
+}
+
+.search-box{
+
+  width:240px;
+
+}
+
+
+.digital-clock{
+
+  background:
+    linear-gradient(
+      135deg,
+      #111827,
+      #1f2937
+    );
+
+  color:#22c55e;
+
+  padding:12px 18px;
+
+  border-radius:16px;
+
+  font-size:24px;
+
+  font-weight:800;
+
+  font-family:monospace;
+
+  letter-spacing:2px;
+
+  box-shadow:
+    inset 0 0 14px rgba(34,197,94,0.25);
+
+}
+
+.btn{
+
+  border:none;
+
+  border-radius:14px;
+
+  padding:12px 18px;
+
+  font-weight:700;
+
+  color:white;
+
+  cursor:pointer;
+
+  transition:0.2s;
+
+}
+
+.btn:hover{
+
+  transform:translateY(-2px);
+
+}
+
+#themeBtn{
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #334155
+    );
+
+}
+
+#playBtn{
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+}
+
+#refreshBtn{
+
+  background:
+    linear-gradient(
+      135deg,
+      #9333ea,
+      #c084fc
+    );
+
+}
+
+.btn-download{
+
+  background:
+    linear-gradient(
+      135deg,
+      #16a34a,
+      #22c55e
+    );
+
+}
+
+.marquee{
+
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #1e293b,
+      #334155
+    );
+
+  color:white;
+
+  padding:12px 0;
+
+}
+
+.marquee-content{
+
+  display:inline-block;
+
+  white-space:nowrap;
+
+  padding-left:100%;
+
+  animation:
+    marquee 32s linear infinite;
+
+  font-weight:700;
+
+}
+
+@keyframes marquee{
+
+  0%{
+    transform:translateX(0);
+  }
+
+  100%{
+    transform:translateX(-100%);
+  }
+
+}
+
+.wrapper{
+
+  padding:24px;
+
+}
+
+.summary{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:20px;
+
+  margin-bottom:24px;
+
+}
+
+.summary-card{
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.96),
+      rgba(255,255,255,0.82)
+    );
+
+  border-radius:24px;
+
+  padding:24px;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.08);
+
+}
+
+.summary-title{
+
+  color:#64748b;
+
+  margin-bottom:12px;
+
+  font-size:14px;
+
+}
+
+.summary-value{
+
+  font-size:42px;
+
+  font-weight:800;
+
+}
+
+.panel{
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.96),
+      rgba(241,245,249,0.94)
+    );
+
+  border-radius:24px;
+
+  overflow:hidden;
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.08);
+
+}
+
+.table-wrap{
+
+  height:72vh;
+
+  overflow:auto;
+
+  scroll-behavior:smooth;
+
+}
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+}
+
+thead{
+
+  position:sticky;
+
+  top:0;
+
+  z-index:100;
+
+}
+
+th{
+
+  background:
+    linear-gradient(
+      135deg,
+      #0f172a,
+      #334155
+    );
+
+  color:white;
+
+  padding:22px 18px;
+
+  font-size:16px;
+
+  font-weight:800;
+
+  text-align:center;
+
+  letter-spacing:0.5px;
+
+}
+
+td{
+
+  padding:18px;
+
+  border-bottom:
+    1px solid #e2e8f0;
+
+  vertical-align:top;
+
+}
+
+tr{
+
+  transition:0.2s;
+
+}
+
+tr:hover{
+
+  background:#f8fafc;
+
+}
+
+.nopol{
+
+  font-size:20px;
+
+  font-weight:800;
+
+  margin-bottom:6px;
+
+}
+
+.material{
+
+  font-size:16px;
+
+  font-weight:800;
+
+  margin-bottom:8px;
+
+  line-height:1.5;
+
+}
+
+.supplier{
+
+  color:#64748b;
+
+  font-size:13px;
+
+  line-height:1.7;
+
+}
+
+.timeline{
+
+  line-height:1.8;
+
+  font-size:14px;
+
+}
+
+.status{
+
+  padding:10px 16px;
+
+  border-radius:999px;
+
+  color:white;
+
+  font-size:12px;
+
+  font-weight:800;
+
+  display:inline-block;
+
+}
+
+.SELESAI{
+
+  background:
+    linear-gradient(
+      135deg,
+      #16a34a,
+      #22c55e
+    );
+
+}
+
+.BONGKAR{
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #3b82f6
+    );
+
+}
+
+.QC{
+
+  background:
+    linear-gradient(
+      135deg,
+      #f59e0b,
+      #fbbf24
+    );
+
+}
+
+.MENUNGGU{
+
+  background:
+    linear-gradient(
+      135deg,
+      #64748b,
+      #94a3b8
+    );
+
+}
+
+.dark-mode{
+
+  background:
+    linear-gradient(
+      135deg,
+      #020617,
+      #0f172a,
+      #111827
+    );
+
+  color:white;
+
+}
+
+.dark-mode .summary-card,
+.dark-mode .panel{
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,41,59,0.95),
+      rgba(15,23,42,0.95)
+    );
+
+  color:white;
+
+}
+
+.dark-mode tr:hover{
+
+  background:
+    rgba(255,255,255,0.04);
+
+}
+
+.dark-mode td{
+
+  border-bottom:
+    1px solid rgba(255,255,255,0.06);
+
+}
+
+.dark-mode .supplier,
+.dark-mode .summary-title{
+
+  color:#cbd5e1;
+
+}
+
+@media screen and (min-width:1920px){
+
+  body{
+
+    zoom:1.08;
+
+  }
+
+}
+
+.row-1111{
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(59,130,246,0.12),
+      rgba(255,255,255,0)
+    );
+
+  border-left:
+    8px solid #2563eb;
+
+}
+
+.row-1112{
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(34,197,94,0.12),
+      rgba(255,255,255,0)
+    );
+
+  border-left:
+    8px solid #16a34a;
+
+}
+
+.row-1113{
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(168,85,247,0.12),
+      rgba(255,255,255,0)
+    );
+
+  border-left:
+    8px solid #9333ea;
+
+}
+
+.plant-cell{
+
+  font-size:24px;
+
+  font-weight:900;
+
+  text-align:center;
+
+  letter-spacing:1px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+  <div class="header-top">
+
+    <div>
+
+      <div class="title">
+        GDRM LEVEL UP
+      </div>
+
+      <div class="subtitle">
+        Live Monitoring Kedatangan di GDRM JN2
+      </div>
+
+    </div>
+
+    <div class="right-tools">
+
+      <button
+        class="btn"
+        id="themeBtn"
+        onclick="toggleTheme()">
+
+        🌙 MODE MALAM
+
+      </button>
+
+      <select
+        id="filterPlant"
+        class="filter-select">
+
+        <option value="ALL">
+          ALL PLANT
+        </option>
+
+        <option value="SL_1111">
+          1111
+        </option>
+
+        <option value="SL_1112">
+          1112
+        </option>
+
+        <option value="SL_1113">
+          1113
+        </option>
+
+      </select>
+
+      <select
+        id="filterStatus"
+        class="filter-select">
+
+        <option value="ALL">
+          ALL STATUS
+        </option>
+
+        <option value="MENUNGGU">
+          MENUNGGU
+        </option>
+
+        <option value="QC">
+          QC
+        </option>
+
+        <option value="BONGKAR">
+          BONGKAR
+        </option>
+
+        <option value="SELESAI">
+          SELESAI
+        </option>
+
+      </select>
+
+      <input
+        type="text"
+        id="searchInput"
+        class="search-box"
+        placeholder="Cari...">
+
+      <input
+        type="date"
+        id="tanggal"
+        class="filter-select">
+
+      <button
+        class="btn"
+        id="playBtn"
+        onclick="toggleAutoScroll()">
+
+        ▶ PLAY
+
+      </button>
+
+     <button
+  class="btn"
+  id="refreshBtn"
+  onclick="manualRefresh()">
+
+  🔄 REFRESH
+
+</button>
+
+<button
+  class="btn"
+  id="alarmBtn"
+  onclick="toggleAlarm()">
+
+  🔇 ALARM OFF
+
+</button>
+
+      <button
+        class="btn btn-download"
+        onclick="downloadExcel()">
+
+        EXCEL
+
+      </button>
+
+      <div
+        id="digitalClock"
+        class="digital-clock">
+
+        00:00:00
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="marquee">
+
+  <div
+    class="marquee-content"
+    id="runningText">
+
+    LOADING...
+
+  </div>
+
+</div>
+
+<div class="wrapper">
+
+  <div class="summary">
+
+    <div class="summary-card">
+
+      <div class="summary-title">
+        TOTAL RITASE
+      </div>
+
+      <div
+        class="summary-value"
+        id="totalRitase">
+
+        0
+
+      </div>
+
+    </div>
+
+    <div class="summary-card">
+
+      <div class="summary-title">
+        BONGKAR
+      </div>
+
+      <div
+        class="summary-value"
+        id="totalBongkar">
+
+        0
+
+      </div>
+
+    </div>
+
+    <div class="summary-card">
+
+      <div class="summary-title">
+        SELESAI
+      </div>
+
+      <div
+        class="summary-value"
+        id="totalSelesai">
+
+        0
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div
+    class="panel">
+
+    <div
+      class="table-wrap"
+      id="tableWrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>NO</th>
+            <th>PLANT</th>
+            <th>NOPOL</th>
+            <th>MATERIAL</th>
+            <th>TIMELINE</th>
+            <th>QTY</th>
+            <th>STATUS</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="tableBody">
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+let allData = [];
+
+let firstSummarySpoken = false;
+
+const APP_SCRIPT_API_URL =
+  "https://script.google.com/macros/s/AKfycbwXYjjlDAtJQIRFSPA-kS-d-64U0PNU1U_ujVL39bM7-RRLzqEUGaO3r-PNK8jp5SM/exec";
+
+function apiJsonp(params){
+
+  return new Promise((resolve, reject) => {
+
+    const callbackName =
+      'gdrmCallback_' +
+      Date.now() +
+      '_' +
+      Math.random()
+        .toString(36)
+        .slice(2);
+
+    params.callback =
+      callbackName;
+
+    const query =
+      new URLSearchParams(params)
+        .toString();
+
+    const script =
+      document.createElement('script');
+
+    const timer =
+      setTimeout(() => {
+
+        cleanup();
+
+        reject(
+          new Error(
+            'Request timeout ke Apps Script'
+          )
+        );
+
+      },30000);
+
+    function cleanup(){
+
+      clearTimeout(timer);
+
+      delete window[callbackName];
+
+      if(script.parentNode){
+
+        script.parentNode.removeChild(script);
+
+      }
+
+    }
+
+    window[callbackName] =
+      function(response){
+
+        cleanup();
+
+        resolve(response);
+
+      };
+
+    script.onerror =
+      function(){
+
+        cleanup();
+
+        reject(
+          new Error(
+            'Gagal ambil data dari Apps Script'
+          )
+        );
+
+      };
+
+    script.src =
+      APP_SCRIPT_API_URL +
+      '?' +
+      query;
+
+    document.body.appendChild(script);
+
+  });
+
+}
+
+const tanggalInput =
+  document.getElementById(
+    "tanggal"
+  );  
+
+const today = new Date();
+
+tanggalInput.value =
+  today.toISOString()
+  .split('T')[0];
+
+loadData();
+
+document
+  .getElementById(
+    "filterPlant"
+  )
+  .addEventListener(
+    "change",
+    renderTable
+  );
+
+document
+  .getElementById(
+    "filterStatus"
+  )
+  .addEventListener(
+    "change",
+    renderTable
+  );
+
+document
+  .getElementById(
+    "searchInput"
+  )
+  .addEventListener(
+    "keyup",
+    renderTable
+  );
+
+tanggalInput.addEventListener(
+  "change",
+  loadData
+);
+
+function loadData(){
+
+  apiJsonp({
+    action:'getData',
+    date:tanggalInput.value
+  })
+  .then(res => {
+
+    if(
+      !res ||
+      !res.ok
+    ){
+
+      console.log(
+        'API gagal:',
+        res
+      );
+
+      return;
+
+    }
+
+    allData =
+      res.data || [];
+
+    renderTable();
+
+    updateSummary();
+
+    updateRunningText();
+
+    if(!firstSummarySpoken){
+
+      speakSummary();
+
+      firstSummarySpoken = true;
+
+    }
+
+    checkOperationalAlarm();
+
+  })
+  .catch(err => {
+
+    console.log(
+      'Gagal load data:',
+      err
+    );
+
+  });
+
+}
+
+function renderTable(){
+
+  const plant =
+    document.getElementById(
+      "filterPlant"
+    ).value;
+
+  const status =
+    document.getElementById(
+      "filterStatus"
+    ).value;
+
+  const search =
+    document.getElementById(
+      "searchInput"
+    ).value
+    .toLowerCase();
+
+  let filtered =
+  allData.filter(d => {
+
+    const matchPlant =
+      plant == "ALL" ||
+      d.plant == plant;
+
+    const matchStatus =
+      status == "ALL" ||
+      d.status == status;
+
+    const text =
+      JSON.stringify(d)
+      .toLowerCase();
+
+    const matchSearch =
+      text.includes(search);
+
+    return (
+      matchPlant &&
+      matchStatus &&
+      matchSearch
+    );
+
+  });
+
+filtered.sort((a,b)=>{
+
+  const timeA =
+    a.masuk || "99:99";
+
+  const timeB =
+    b.masuk || "99:99";
+
+  return timeA.localeCompare(timeB);
+
+});
+
+  const tbody =
+    document.getElementById(
+      "tableBody"
+    );
+
+  tbody.innerHTML = '';
+
+  filtered.forEach(d => {
+
+    tbody.innerHTML += `
+
+    <tr class="row-${d.plant.replace('SL_','')}">
+
+      <td>${d.no}</td>
+
+     <td class="plant-cell">
+
+  ${d.plant.replace('SL_','')}
+
+</td>
+
+      <td>
+
+        <div class="nopol">
+          ${d.nopol || '-'}
+        </div>
+
+        <div class="supplier">
+          ${d.supplier || '-'}
+        </div>
+
+      </td>
+
+      <td>
+
+        <div class="material">
+          ${d.material || '-'}
+        </div>
+
+        <div class="supplier">
+
+          SKU :
+          ${d.sku || '-'}
+          <br>
+
+          MERK :
+          ${d.merk || '-'}
+
+        </div>
+
+      </td>
+
+      <td class="timeline">
+
+        IN :
+        ${d.masuk || '-'}
+        <br>
+
+        QC :
+        ${d.qc || '-'}
+        <br>
+
+        START :
+        ${d.start || '-'}
+        <br>
+
+        FINISH :
+        ${d.finish || '-'}
+
+      </td>
+
+      <td>
+
+        ${d.qty || 0} Zak
+        <br>
+
+        ${d.kg || 0} KG
+
+      </td>
+
+      <td>
+
+        <span
+          class="status ${d.status}">
+
+          ${d.status}
+
+        </span>
+
+      </td>
+
+    </tr>
+
+    `;
+
+  });
+
+}
+
+function updateSummary(){
+
+  document.getElementById(
+    "totalRitase"
+  ).innerText =
+    allData.length;
+
+  document.getElementById(
+    "totalBongkar"
+  ).innerText =
+    allData.filter(d =>
+      d.status == "BONGKAR"
+    ).length;
+
+  document.getElementById(
+    "totalSelesai"
+  ).innerText =
+    allData.filter(d =>
+      d.status == "SELESAI"
+    ).length;
+
+}
+
+function updateRunningText(){
+
+  const total1111 =
+    allData.filter(d =>
+      d.plant == "SL_1111"
+    ).length;
+
+  const total1112 =
+    allData.filter(d =>
+      d.plant == "SL_1112"
+    ).length;
+
+  const total1113 =
+    allData.filter(d =>
+      d.plant == "SL_1113"
+    ).length;
+
+  document.getElementById(
+    "runningText"
+  ).innerHTML =
+
+  `
+  🚛 TOTAL : ${allData.length}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  🏭 SL_1111 :
+  ${total1111}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  🏭 SL_1112 :
+  ${total1112}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  🏭 SL_1113 :
+  ${total1113}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  ⚡ BONGKAR :
+  ${allData.filter(d => d.status=="BONGKAR").length}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  ✅ SELESAI :
+  ${allData.filter(d => d.status=="SELESAI").length}
+  `;
+
+}
+
+function downloadExcel(){
+
+  apiJsonp({
+    action:'downloadExcel'
+  })
+  .then(res => {
+
+    if(
+      res &&
+      res.ok &&
+      res.url
+    ){
+
+      window.open(
+        res.url,
+        '_blank'
+      );
+
+    }
+
+  })
+  .catch(err => {
+
+    console.log(
+      'Gagal download excel:',
+      err
+    );
+
+  });
+
+}
+
+function manualRefresh(){
+
+  loadData();
+
+}
+
+setInterval(() => {
+
+  loadData();
+
+},600000);
+
+let autoScroll = false;
+
+let scrollInterval;
+
+function toggleAutoScroll(){
+
+  autoScroll = !autoScroll;
+
+  const btn =
+    document.getElementById(
+      "playBtn"
+    );
+
+  const wrap =
+    document.getElementById(
+      "tableWrap"
+    );
+
+  if(autoScroll){
+
+    btn.innerHTML =
+      "⏸ STOP";
+
+    scrollInterval =
+      setInterval(() => {
+
+        wrap.scrollTop += 1;
+
+        if(
+          wrap.scrollTop +
+          wrap.clientHeight >=
+          wrap.scrollHeight
+        ){
+
+          clearInterval(
+            scrollInterval
+          );
+
+          setTimeout(() => {
+
+            wrap.scrollTop = 0;
+
+            if(autoScroll){
+
+              toggleAutoScroll();
+
+              toggleAutoScroll();
+
+            }
+
+          },300000);
+
+        }
+
+      },80);
+
+  }else{
+
+    btn.innerHTML =
+      "▶ PLAY";
+
+    clearInterval(
+      scrollInterval
+    );
+
+  }
+
+}
+
+let darkMode = false;
+
+function toggleTheme(){
+
+  darkMode = !darkMode;
+
+  const body =
+    document.body;
+
+  const btn =
+    document.getElementById(
+      "themeBtn"
+    );
+
+  if(darkMode){
+
+    body.classList.add(
+      "dark-mode"
+    );
+
+    btn.innerHTML =
+      "☀ MODE SIANG";
+
+  }else{
+
+    body.classList.remove(
+      "dark-mode"
+    );
+
+    btn.innerHTML =
+      "🌙 MODE MALAM";
+
+  }
+
+}
+
+function updateClock(){
+
+  const now = new Date();
+
+  const time =
+    now.toLocaleTimeString(
+      'id-ID'
+    );
+
+  document.getElementById(
+    "digitalClock"
+  ).innerText = time;
+
+}
+
+setInterval(
+  updateClock,
+  1000
+);
+
+updateClock();
+
+function speakSummary(){
+
+  const total1111 =
+    allData.filter(d =>
+      d.plant == "SL_1111"
+    ).length;
+
+  const total1112 =
+    allData.filter(d =>
+      d.plant == "SL_1112"
+    ).length;
+
+  const total1113 =
+    allData.filter(d =>
+      d.plant == "SL_1113"
+    ).length;
+
+  const text =
+
+  `
+  Hallo TIm GDRM!, Kedatangan hari ini
+
+  Plant sebelas sebelas,
+  ${total1111} ritase.
+
+  Plant sebelas dua belas,
+  ${total1112} ritase.
+
+  Plant sebelas tiga belas,
+  ${total1113} ritase.
+
+  Tetap semangat, jangan lupa update, dan cek selalu semua penginputan
+  `;
+
+  const speech =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+  speech.lang = 'id-ID';
+
+  speech.rate = 0.9;
+
+  window.speechSynthesis.cancel();
+
+  window.speechSynthesis.speak(
+    speech
+  );
+
+}
+
+let alarmEnabled = false;
+
+let alarmHistory = {};
+
+let continuousAlarmTimer = null;
+
+function toggleAlarm(){
+
+  const btn =
+    document.getElementById(
+      "alarmBtn"
+    );
+
+  if(!alarmEnabled){
+
+    alarmEnabled = true;
+
+    btn.innerHTML =
+      "🔊 ALARM ON";
+
+    btn.classList.add(
+      "alarm-on"
+    );
+
+    speakAlarm(
+      "Speaker alarm aktif. Monitoring ritase berjalan."
+    );
+
+    checkOperationalAlarm();
+
+    return;
+
+  }
+
+  const confirmOff =
+    confirm(
+      "PERINGATAN!\n\nMematikan alarm wajib izin UH / SH!\n\nApakah alarm benar-benar mau dimatikan?"
+    );
+
+  if(!confirmOff) return;
+
+  const izin =
+    prompt(
+      "Ketik: SAYA SUDAH IZIN UH SH"
+    );
+
+  if(
+    izin !==
+    "SAYA SUDAH IZIN UH SH"
+  ){
+
+    alert(
+      "Alarm tidak dimatikan. Wajib izin UH / SH."
+    );
+
+    return;
+
+  }
+
+  alarmEnabled = false;
+
+  btn.innerHTML =
+    "🔇 ALARM OFF";
+
+  btn.classList.remove(
+    "alarm-on"
+  );
+
+  stopContinuousAlarm();
+
+  window.speechSynthesis.cancel();
+
+}
+
+function speakAlarm(text){
+
+  if(!alarmEnabled) return;
+
+  const speech =
+    new SpeechSynthesisUtterance(
+      text
+    );
+
+  speech.lang = "id-ID";
+
+  speech.rate = 1;
+
+  speech.pitch = 1.2;
+
+  speech.volume = 1;
+
+  window.speechSynthesis.cancel();
+
+  window.speechSynthesis.speak(
+    speech
+  );
+
+}
+
+function speakAlarmLoop(text, intervalMs){
+
+  if(!alarmEnabled) return;
+
+  stopContinuousAlarm();
+
+  speakAlarm(text);
+
+  continuousAlarmTimer =
+    setInterval(() => {
+
+      if(!alarmEnabled){
+
+        stopContinuousAlarm();
+        return;
+
+      }
+
+      speakAlarm(text);
+
+    }, intervalMs || 15000);
+
+}
+
+function stopContinuousAlarm(){
+
+  if(continuousAlarmTimer){
+
+    clearInterval(
+      continuousAlarmTimer
+    );
+
+    continuousAlarmTimer = null;
+
+  }
+
+}
+
+function canSpeak(key, intervalMinutes){
+
+  const now =
+    Date.now();
+
+  const last =
+    alarmHistory[key] || 0;
+
+  const intervalMs =
+    intervalMinutes *
+    60 *
+    1000;
+
+  if(
+    now - last >=
+    intervalMs
+  ){
+
+    alarmHistory[key] = now;
+
+    return true;
+
+  }
+
+  return false;
+
+}
+
+function getMinuteDiff(timeMs){
+
+  if(!timeMs) return 0;
+
+  return Math.floor(
+    (
+      Date.now() - timeMs
+    ) / 60000
+  );
+
+}
+
+function getPlantName(d){
+
+  return String(
+    d.plant || ""
+  ).replace(
+    "SL_",
+    ""
+  );
+
+}
+
+function getRmName(d){
+
+  return (
+    d.material ||
+    d.sku ||
+    "material"
+  );
+
+}
+
+function checkOperationalAlarm(){
+
+  if(!alarmEnabled) return;
+
+  if(
+    !allData ||
+    allData.length === 0
+  ){
+
+    stopContinuousAlarm();
+
+    return;
+
+  }
+
+  let continuousItem = null;
+
+  for(
+    let i = 0;
+    i < allData.length;
+    i++
+  ){
+
+    const d =
+      allData[i];
+
+    const plant =
+      getPlantName(d);
+
+    const nopol =
+      d.nopol || "tanpa nopol";
+
+    const rm =
+      getRmName(d);
+
+    /*
+ /*
+  1. DATA ADA TAPI IN KOSONG
+  BUNYI TERUS SETIAP 7 DETIK SAMPAI IN DIISI
+*/
+if(
+  !d.masukMs
+){
+
+  speakAlarmLoop(
+    ` SAYANGKU !! Alarm. IN kosong. Admin ${plant}, nopol ${nopol}.`,
+    600000
+  );
+
+  return;
+
+}
+
+    /*
+      2. IN SUDAH TERISI, QC MASIH KOSONG
+      INGATKAN SETIAP 3 MENIT
+    */
+    if(
+      d.masukMs &&
+      !d.qcMs
+    ){
+
+      const key =
+        `QC_KOSONG_${d.plant}_${d.no}_${d.nopol}`;
+
+      if(
+        canSpeak(
+          key,
+          3
+        )
+      ){
+
+        speakAlarm(
+          `SAYANGKU !! Admin ${plant}, nopol ${nopol}, R M ${rm}, segera lakukan pengecekan Q C.`
+        );
+
+        return;
+
+      }
+
+    }
+
+    /*
+      3. QC SUDAH TERISI, START MASIH KOSONG
+      INGATKAN SETIAP 10 MENIT
+    */
+    if(
+      d.qcMs &&
+      !d.startMs
+    ){
+
+      const key =
+        `SAYANGKU !! ADMIN! START_KOSONG_${d.plant}_${d.no}_${d.nopol}`;
+
+      if(
+        canSpeak(
+          key,
+          10
+        )
+      ){
+
+        speakAlarm(
+          ` SAYANGKU !!Admin ${plant}, Q C nopol ${nopol} sudah selesai. Segera update start bongkar R M ${rm}.`
+        );
+
+        return;
+
+      }
+
+    }
+
+    /*
+      4. START SUDAH TERISI, FINISH MASIH KOSONG
+      30 MENIT = PERINGATAN
+      LEBIH DARI 40 MENIT = BUNYI TERUS
+    */
+    if(
+      d.startMs &&
+      !d.finishMs
+    ){
+
+      const menit =
+        getMinuteDiff(
+          d.startMs
+        );
+
+      if(
+        menit > 40
+      ){
+
+        continuousItem = d;
+
+        break;
+
+      }
+
+      if(
+        menit >= 30
+      ){
+
+        const key =
+          ` FINISH_WARNING_${d.plant}_${d.no}_${d.nopol}`;
+
+        if(
+          canSpeak(
+            key,
+            3
+          )
+        ){
+
+          speakAlarm(
+            `bahayaaa !!! Perhatian admin ${plant}. Bongkar nopol ${nopol}, R M ${rm}, sudah ${menit} menit. Waktu hampir habis, segera update finish bongkar.`
+          );
+
+          return;
+
+        }
+
+      }
+
+    }
+
+  }
+
+  if(continuousItem){
+
+    const plant =
+      getPlantName(
+        continuousItem
+      );
+
+    const nopol =
+      continuousItem.nopol ||
+      "tanpa nopol";
+
+    const rm =
+      getRmName(
+        continuousItem
+      );
+
+    const menit =
+      getMinuteDiff(
+        continuousItem.startMs
+      );
+
+    speakAlarmLoop(
+     speakAlarmLoop(
+  `Alarm kritikal. Bongkar lebih dari ${menit} menit. Admin ${plant}, nopol ${nopol}, segera isi finish.`,
+  15000
+);
+
+  }else{
+
+    stopContinuousAlarm();
+
+  }
+  
+
+}
+
+</script>
+
+</body>
+</html>
